@@ -4,7 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { Floor } from './Floor';
 import Car from './Car';
 import { Physics } from '@react-three/cannon';
-
+import { Track } from './Track';
 const App = () => {
   return (
     <Canvas>
@@ -17,6 +17,7 @@ const App = () => {
             <OrbitControls target={[20, 20, 10]} />
 
             <Car />
+            <Track />
             <Floor />
         </Suspense>
       </Physics>

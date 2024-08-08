@@ -4,6 +4,7 @@ import { useGLTF } from '@react-three/drei';
 import { useBox, useRaycastVehicle } from '@react-three/cannon';
 import { useWheels } from './useWheels';
 import { WheelDebug } from './WheelDebug';
+import { useControls } from './useControls';
 
 const Car = () => {
     const { scene, animations} = useGLTF(carObj);
@@ -12,7 +13,7 @@ const Car = () => {
     const width = 1;
     const height = 0.5;
     const front = 1;
-    const wheelRadius = 1
+    const wheelRadius = .5;
 
     const carBodyArgs = [width, height, front * 2];
 
@@ -34,6 +35,8 @@ const Car = () => {
     }),
         useRef(null),
     );
+
+    useControls(vehicleApi, carApi);
 
     return (
         <group ref={vehicle} name='vehicle'>
