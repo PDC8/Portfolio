@@ -16,9 +16,9 @@ const App = () => {
             <PerspectiveCamera makeDefault position={[0, 50, 0]} fov={40} />
             <OrbitControls target={[20, 20, 10]} />
 
-            <Car />
             <Track />
             <Floor />
+            <Car />
         </Suspense>
       </Physics>
     </Canvas>
