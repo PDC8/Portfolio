@@ -1,8 +1,10 @@
 # Portfolio
 
-##Under Construction
-###Projected Timeline
-
+## Under Construction
+### Projected Timeline
+- Finish redirection and popup links by 11/25
+- Finish assets by 12/01
+- Fully finish by 01/01/25
 
 
 
