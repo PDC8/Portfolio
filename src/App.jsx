@@ -4,14 +4,19 @@ import { Canvas } from '@react-three/fiber';
 import { Floor } from './Floor';
 import Car from './Car';
 import { Physics } from '@react-three/cannon';
+import { Billboard } from './Billboard';
+import image1 from './Assets/download.jpeg';
 // import { setCurrentStack } from 'three/webgpu';
 // import { Track } from './Track';
 
 
 const App = () => {
   const [thirdPerson, setThirdPerson] = useState(false);
-  const [cameraPosition, setCameraPosition] = useState([0, 50, 0])
-
+  const [cameraPosition, setCameraPosition] = useState([30, 40, 30])
+  
+  const projects = [
+    {position: [10, 2.5, 0], image: image1}
+  ];
 
 
   useEffect(() => {
@@ -39,9 +44,12 @@ const App = () => {
             {/* <Environment preset="forest" background/> */}
             <PerspectiveCamera makeDefault position={cameraPosition} fov={40} />
             {!thirdPerson && (
-              <OrbitControls target={[20, 20, 10]} />
+              <OrbitControls target={[0, 0, 0]} />
             )}
-    
+
+            {projects.map((project, index) => (
+              <Billboard key={index} position={project.position} image={project.image} />
+            ))}
 
 
             {/* <Track /> */}

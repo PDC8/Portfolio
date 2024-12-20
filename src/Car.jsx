@@ -12,7 +12,7 @@ import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 const Car = ({thirdPerson}) => {
     const { scene, animations} = useGLTF(carObj);
   
-    const pos = [0, 10, 0];
+    const pos = [0, 5, 0];
     const width = 1;
     const height = 0.5;
     const front = 1;
@@ -53,10 +53,10 @@ const Car = ({thirdPerson}) => {
         let wDir = new Vector3(0, 0, -1);
         wDir.applyQuaternion(quaternion);
         wDir.normalize();
-
+        
         let cameraPosition = position.clone().add(
-            wDir.clone().multiplyScalar(-10).add(
-                new Vector3(0, 10, 0)
+            wDir.clone().multiplyScalar(-20).add(
+                new Vector3(20, 30, 0)
             )
         );
 
