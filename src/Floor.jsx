@@ -3,7 +3,7 @@ import { usePlane } from '@react-three/cannon';
 import { MeshReflectorMaterial } from '@react-three/drei';
 
 
-export function Floor(){
+export function Floor({ rectanglePosition, rectangleDimensions }){
     const [ref] = usePlane (() => ({
         type: 'Static',
         rotation: [-Math.PI / 2, 0, 0],

@@ -9,7 +9,8 @@ import { useControls } from './useControls';
 import { Vector3, Quaternion } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
-const Car = ({thirdPerson}) => {
+
+const Car = ({debug}) => {
     const { scene, animations} = useGLTF(carObj);
   
     const pos = [0, 5, 0];
@@ -41,24 +42,16 @@ const Car = ({thirdPerson}) => {
 
     useControls(vehicleApi, carApi);
     
-    useFrame((state) => {
-        if(!thirdPerson) return;
 
+    //fix camera to the car
+    useFrame((state) => {
+        if (debug) return;
+        
         let position = new Vector3(0, 0, 0);
         position.setFromMatrixPosition(carBody.current.matrixWorld);
 
-        let quaternion = new Quaternion(0, 0, 0, 0);
-        quaternion.setFromRotationMatrix(carBody.current.matrixWorld);
-
-        let wDir = new Vector3(0, 0, -1);
-        wDir.applyQuaternion(quaternion);
-        wDir.normalize();
-        
-        let cameraPosition = position.clone().add(
-            wDir.clone().multiplyScalar(-20).add(
-                new Vector3(20, 30, 0)
-            )
-        );
+        let fixedOffset = new Vector3(20, 30, 20);
+        let cameraPosition = position.clone().add(fixedOffset);
 
         state.camera.position.copy(cameraPosition);
         state.camera.lookAt(position);

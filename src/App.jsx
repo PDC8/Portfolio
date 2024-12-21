@@ -1,39 +1,30 @@
 import { Environment, OrbitControls, PerspectiveCamera } from '@react-three/drei';
-import { Suspense, useState, useEffect } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { Suspense, useState, useEffect, useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
 import { Floor } from './Floor';
 import Car from './Car';
 import { Physics } from '@react-three/cannon';
 import { Billboard } from './Billboard';
 import image1 from './Assets/download.jpeg';
+
 // import { setCurrentStack } from 'three/webgpu';
 // import { Track } from './Track';
 
 
+
+
+
+
 const App = () => {
-  const [thirdPerson, setThirdPerson] = useState(false);
-  const [cameraPosition, setCameraPosition] = useState([30, 40, 30])
-  
+
+  const carRef = useRef(null);
+  const [debug] = useState(false);
+  const [cameraPosition] = useState([30, 40, 30])
+
+
   const projects = [
     {position: [10, 2.5, 0], image: image1}
   ];
-
-
-  useEffect(() => {
-    function keydownHandler(e) {
-      if (e.key == "k") {
-        if(thirdPerson) {
-          var random = Math.random() * 1.01
-          setCameraPosition([0 + random, 50 + random, 0 + random]);
-        }
-        setThirdPerson(!thirdPerson);
-      }
-    }
-    window.addEventListener("keydown", keydownHandler);
-    return () => window.removeEventListener("keydown", keydownHandler);
-  }, [thirdPerson]);
-
-
 
   return (
     <Canvas>
@@ -43,18 +34,21 @@ const App = () => {
             <pointLight position={[10, 10, 10]} />
             {/* <Environment preset="forest" background/> */}
             <PerspectiveCamera makeDefault position={cameraPosition} fov={40} />
-            {!thirdPerson && (
+            {debug && (
               <OrbitControls target={[0, 0, 0]} />
             )}
 
             {projects.map((project, index) => (
-              <Billboard key={index} position={project.position} image={project.image} />
+              <group key={index}>
+                 <Billboard position={project.position} image={project.image} />
+              </group>
             ))}
 
 
             {/* <Track /> */}
-            <Floor />
-            <Car thirdPerson={thirdPerson}/>
+            <Floor/>
+            <Car ref={carRef} debug={debug}/>
+
         </Suspense>
       </Physics>
     </Canvas>
