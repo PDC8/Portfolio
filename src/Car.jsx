@@ -10,7 +10,7 @@ import { Vector3, Quaternion } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 
-const Car = ({debug}) => {
+const Car = ({debug, hyperlinks, setCurrentLink}) => {
     const { scene, animations} = useGLTF(carObj);
   
     const pos = [0, 5, 0];
@@ -45,16 +45,33 @@ const Car = ({debug}) => {
 
     //fix camera to the car
     useFrame((state) => {
-        if (debug) return;
-        
-        let position = new Vector3(0, 0, 0);
-        position.setFromMatrixPosition(carBody.current.matrixWorld);
+        if (carBody.current){
+            if (!debug){
+                const carPosition = new Vector3().setFromMatrixPosition(carBody.current.matrixWorld);
+                let fixedOffset = new Vector3(20, 30, 20);
+                let cameraPosition = carPosition.clone().add(fixedOffset);
+                state.camera.position.copy(cameraPosition);
+                state.camera.lookAt(carPosition);
+            }
 
-        let fixedOffset = new Vector3(20, 30, 20);
-        let cameraPosition = position.clone().add(fixedOffset);
+            const carPosition = new Vector3().setFromMatrixPosition(carBody.current.matrixWorld);
+            
+            let activeLink = null;
+            for (const area of hyperlinks) {
+                const [x, y, z] = area.position;
+                const [width, depth] = area.size;
 
-        state.camera.position.copy(cameraPosition);
-        state.camera.lookAt(position);
+                const inX = carPosition.x >= x - width / 2 && carPosition.x <= x + width / 2;
+                const inZ = carPosition.z >= z - depth / 2 && carPosition.z <= z + depth / 2
+
+                if (inX && inZ) {
+                    activeLink = area.link;
+                    break;
+                }
+            }
+
+            setCurrentLink(activeLink)
+        }
     });
 
 
