@@ -64,7 +64,7 @@ const App = () => {
 
 
             {/* <Track /> */}
-            <Floor/>
+            <Floor projects={projects}/>
             <Car ref={carRef} debug={debug} hyperlinks={hyperlinks} setCurrentLink={setCurrentLink}/>
             {currentLink && (
                     <Html position={[0, 5, 0]}>
