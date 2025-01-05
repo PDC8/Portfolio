@@ -10,8 +10,8 @@ import { Vector3, Quaternion } from 'three';
 import { GLTFLoader } from 'three/examples/jsm/Addons.js';
 
 
-const Car = ({debug, hyperlinks, setCurrentLink}) => {
-    const { scene, animations} = useGLTF(carObj);
+const Car = ({debug, projects, setCurrentLink, setCurrentLinkPos}) => {
+    const { scene, animations } = useGLTF(carObj);
   
     const pos = [0, 5, 0];
     const width = 1;
@@ -48,7 +48,7 @@ const Car = ({debug, hyperlinks, setCurrentLink}) => {
         if (carBody.current){
             if (!debug){
                 const carPosition = new Vector3().setFromMatrixPosition(carBody.current.matrixWorld);
-                let fixedOffset = new Vector3(20, 30, 20);
+                let fixedOffset = new Vector3(-20, 35, 20);
                 let cameraPosition = carPosition.clone().add(fixedOffset);
                 state.camera.position.copy(cameraPosition);
                 state.camera.lookAt(carPosition);
@@ -57,20 +57,27 @@ const Car = ({debug, hyperlinks, setCurrentLink}) => {
             const carPosition = new Vector3().setFromMatrixPosition(carBody.current.matrixWorld);
             
             let activeLink = null;
-            for (const area of hyperlinks) {
-                const [x, y, z] = area.position;
-                const [width, depth] = area.size;
+            let linkPos = null;
+            for (const project of projects) {
+                if (project.projIdx == 0){
+                    const [x, y, z] = project.linkPosition;
+                    const [width, depth] = project.linkSize;
 
-                const inX = carPosition.x >= x - width / 2 && carPosition.x <= x + width / 2;
-                const inZ = carPosition.z >= z - depth / 2 && carPosition.z <= z + depth / 2
-
-                if (inX && inZ) {
-                    activeLink = area.link;
-                    break;
+                    // console.log(carPosition.x, carPosition.z, x, z);
+                    const inX = carPosition.x >= x - width && carPosition.x <= x + width;
+                    const inZ = carPosition.z >= z - depth && carPosition.z <= z + depth;
+    
+                    if (inX && inZ) {
+                        activeLink = project.link;
+                        linkPos = project.linkPosition;
+                        console.log(linkPos);
+                        break;
+                    }
                 }
             }
 
-            setCurrentLink(activeLink)
+            setCurrentLink(activeLink);
+            setCurrentLinkPos(linkPos);
         }
     });
 

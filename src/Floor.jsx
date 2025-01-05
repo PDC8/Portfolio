@@ -1,21 +1,17 @@
-import { useRef } from 'react'
+import { useRef, useMemo } from 'react'
 import { usePlane } from '@react-three/cannon';
-import { MeshReflectorMaterial, Text } from '@react-three/drei';
+import { Line, MeshReflectorMaterial, Text } from '@react-three/drei';
 
 
 export function Floor({projects}){
-
-    const text = [{description: "Hell World"}]
 
     const [ref] = usePlane (() => ({
         type: 'Static',
         rotation: [-Math.PI / 2, 0, 0],
         position: [0, 0, 0],
-    }),
+        }),
         useRef(null),
     );   
-
-
 
     return (
         <>
@@ -23,27 +19,59 @@ export function Floor({projects}){
                 <planeGeometry args={[1000, 1000]} />
                 <meshStandardMaterial color={"gray"} />
             </mesh>
-            {/* <Text
-            position={[10, 0.01, -10]} // Position slightly above the plane to avoid z-fighting
-            fontSize={.5} // Adjust the font size
-            rotation={[-Math.PI / 2, 0, 0]} // Align text flat with the floor
-            color="black" // Text color
-            >
-                Hello World
-            </Text> */}
 
-            {projects.map((project, index) => (
-              <group key={index}>
-                <Text
-                position={[project.position[0], project.position[1] + 0.01, project.position[2] + 10]} // Position slightly above the plane to avoid z-fighting
-                fontSize={.5} // Adjust the font size
-                rotation={[-Math.PI / 2, 0, 0]} // Align text flat with the floor
-                color="black" // Text color
-                >
-                    {text[index].description}
-                </Text>
-              </group>
-            ))}
+
+            {projects.map((project, index) => {
+                if (project.projIdx == 0){
+                    return (
+                        <group key={index}>
+                            <Text
+                                position={[project.position[0] - 5, 0, project.position[2] + 8]}
+                                fontSize={0.6}
+                                fontWeight="bold"
+                                rotation={[-Math.PI / 2, 0, 0]}
+                                anchorX="left"
+                                maxWidth={10}
+                                depthOffset={-1}
+                                color="black"
+                                renderOrder={1}
+                            >
+                                {project.title}
+                            </Text>
+
+
+                            <Text
+                                position={[project.linkPosition[0], 0, project.linkPosition[2]]}
+                                fontSize={0.6}
+                                fontWeight="bold"
+                                rotation={[-Math.PI / 2, 0, 0]}
+                                anchorX="left"
+                                maxWidth={10}
+                                depthOffset={-1}
+                                color="black"
+                                renderOrder={1}
+                            >
+                                Link
+                            </Text>
+
+                            
+                            <Text
+                                position={[project.position[0] - 5, 0, project.position[2] + 10]}
+                                fontSize={0.5}
+                                rotation={[-Math.PI / 2, 0, 0]}
+                                anchorX="left"
+                                maxWidth={12}
+                                depthOffset={-1}
+                                color="black"
+                                renderOrder={1}
+                            >
+                                {project.description}
+                            </Text>
+                        </group>
+                    );
+                }
+                
+            })}
 
 
 
