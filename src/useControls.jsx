@@ -68,33 +68,16 @@ export const useControls = (vehicleApi, carApi) => {
         }
     }
 
-    const wheelForce = 200;
+    const wheelForce = 150;
     const steerValue = 0.5;
     // const driftValue = 1000;
     // const driftPos = 2;
-    // const driftValue = 20;
-    // const driftPos = 2;
-    let driftSteer = .22;
+    let driftSteer = .24;
     useEffect(() => {
 
-        if(controls.w){
-            setBrakeZero();
-            vehicleApi.applyEngineForce(wheelForce, 0);
-            vehicleApi.applyEngineForce(wheelForce, 1);
-
-        }
-        else if(controls.s){
-            setBrakeZero();
-            vehicleApi.applyEngineForce(-wheelForce, 0);
-            vehicleApi.applyEngineForce(-wheelForce, 1);
-
-        }
-        else{
-            setForceZero();
-            applyFriction();
-        }
-
         if (controls.drift && controls.w) {
+            // vehicleApi.applyEngineForce(wheelForce, 0);
+            // vehicleApi.applyEngineForce(wheelForce, 1);
             if(controls.a){
                 vehicleApi.setSteeringValue(-driftSteer, 0);
                 vehicleApi.setSteeringValue(-driftSteer, 1);
@@ -112,9 +95,27 @@ export const useControls = (vehicleApi, carApi) => {
             else{
                 setSteerZero();
 
+
             }
         }
         else {
+            if(controls.w) {
+                setBrakeZero();
+                vehicleApi.applyEngineForce(wheelForce, 0);
+                vehicleApi.applyEngineForce(wheelForce, 1);
+    
+            }
+            else if(controls.s) {
+                setBrakeZero();
+                vehicleApi.applyEngineForce(-wheelForce, 0);
+                vehicleApi.applyEngineForce(-wheelForce, 1);
+    
+            }
+            else{
+                setForceZero();
+                applyFriction();
+            }
+
             if(controls.a){
                 vehicleApi.setSteeringValue(steerValue, 2);
                 vehicleApi.setSteeringValue(steerValue, 3);
