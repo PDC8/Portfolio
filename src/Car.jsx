@@ -17,12 +17,12 @@ const Car = ({debug, projects, setCurrentLink, setCurrentLinkPos}) => {
     const width = 1;
     const height = 0.5;
     const front = 1;
-    const wheelRadius = .5;
+    const wheelRadius = .4;
 
     const carBodyArgs = [width, height, front * 2];
 
     const [carBody, carApi] = useBox(() => ({
-        mass: 150,
+        mass: 100,
         args: carBodyArgs,
         position: pos,
         rotation: [0, 0, 0],
@@ -36,6 +36,9 @@ const Car = ({debug, projects, setCurrentLink, setCurrentLinkPos}) => {
         chassisBody: carBody,
         wheelInfos: wheelInfos,
         wheels: wheels,
+        indexRightAxis: 0,
+        indexUpAxis: 1,
+        indexForwardAxis: 2,
     }),
         useRef(null),
     );

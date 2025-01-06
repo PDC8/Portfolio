@@ -7,17 +7,33 @@ export const useControls = (vehicleApi, carApi) => {
 
     useEffect(() => {
         const keyDownPressHandler = (e) => {
-            setControls((controls) => ({
-                ...controls,
-                [e.key.toLowerCase()]: true,
-            }));
+            if (e.key === ' '){
+                setControls((controls) => ({
+                    ...controls,
+                    drift: true,
+                }));
+            }
+            else{
+                setControls((controls) => ({
+                    ...controls,
+                    [e.key.toLowerCase()]: true,
+                }));
+            }
         }
 
         const keyUpPressHandler = (e) => {
-            setControls((controls) => ({
-                ...controls,
-                [e.key.toLowerCase()]: false,
-            }));
+            if (e.key === ' ') {
+                setControls((controls) => ({
+                    ...controls,
+                    drift: false,
+                }));
+            }
+            else{
+                setControls((controls) => ({
+                    ...controls,
+                    [e.key.toLowerCase()]: false,
+                }));
+            }
         }
 
         window.addEventListener('keydown', keyDownPressHandler);
@@ -31,38 +47,87 @@ export const useControls = (vehicleApi, carApi) => {
 
     }, []);
 
+    const applyFriction = () => {
+        for (let i = 0; i < 4; i++){
+            vehicleApi.setBrake(1, i);
+        }
+    }
+    const setForceZero = () => {
+        for (let i = 0; i < 4; i++){
+            vehicleApi.applyEngineForce(0, i);
+        }
+    }
+    const setBrakeZero = () => {
+        for (let i = 0; i < 4; i++){
+            vehicleApi.setBrake(0, i);
+        }
+    }
+    const setSteerZero = () => {
+        for (let i = 0; i < 4; i++){
+            vehicleApi.setSteeringValue(0, i);
+        }
+    }
+
+    const wheelForce = 200;
+    const steerValue = 0.5;
+    // const driftValue = 1000;
+    // const driftPos = 2;
+    // const driftValue = 20;
+    // const driftPos = 2;
+    let driftSteer = .22;
     useEffect(() => {
+
         if(controls.w){
-            vehicleApi.applyEngineForce(500, 2);
-            vehicleApi.applyEngineForce(500, 3);
+            setBrakeZero();
+            vehicleApi.applyEngineForce(wheelForce, 0);
+            vehicleApi.applyEngineForce(wheelForce, 1);
+
         }
         else if(controls.s){
-            vehicleApi.applyEngineForce(-500, 2);
-            vehicleApi.applyEngineForce(-500, 3);
+            setBrakeZero();
+            vehicleApi.applyEngineForce(-wheelForce, 0);
+            vehicleApi.applyEngineForce(-wheelForce, 1);
 
         }
         else{
-            vehicleApi.applyEngineForce(0, 2);
-            vehicleApi.applyEngineForce(0, 3);
+            setForceZero();
+            applyFriction();
         }
 
-        if(controls.a){
-            vehicleApi.setSteeringValue(1, 2);
-            vehicleApi.setSteeringValue(1, 3);
-            vehicleApi.setSteeringValue(-.1, 0);
-            vehicleApi.setSteeringValue(-.1, 1);
-        }
-        else if(controls.d){
-            vehicleApi.setSteeringValue(-1, 2);
-            vehicleApi.setSteeringValue(-1, 3);
-            vehicleApi.setSteeringValue(.1, 0);
-            vehicleApi.setSteeringValue(.1, 1);
-        }
-        else{
-            for(let i = 0; i < 4; i ++){
-                vehicleApi.setSteeringValue(0, i);
+        if (controls.drift && controls.w) {
+            if(controls.a){
+                vehicleApi.setSteeringValue(-driftSteer, 0);
+                vehicleApi.setSteeringValue(-driftSteer, 1);
+                vehicleApi.setSteeringValue(steerValue, 2);
+                vehicleApi.setSteeringValue(steerValue, 3);
+                // carApi.applyLocalImpulse([driftValue, 0, 0], [0, 0, driftPos]);
+            }
+            else if(controls.d){
+                vehicleApi.setSteeringValue(driftSteer, 0);
+                vehicleApi.setSteeringValue(driftSteer, 1);
+                vehicleApi.setSteeringValue(-steerValue, 2);
+                vehicleApi.setSteeringValue(-steerValue, 3);
+                // carApi.applyLocalImpulse([-driftValue, 0, 0], [0, 0, driftPos]);
+            }
+            else{
+                setSteerZero();
+
             }
         }
+        else {
+            if(controls.a){
+                vehicleApi.setSteeringValue(steerValue, 2);
+                vehicleApi.setSteeringValue(steerValue, 3);
+            }
+            else if(controls.d){
+                vehicleApi.setSteeringValue(-steerValue, 2);
+                vehicleApi.setSteeringValue(-steerValue, 3);
+            }
+            else{
+                setSteerZero();
+            }
+        }
+    
     }, [controls, vehicleApi, carApi])
 
 
